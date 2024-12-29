@@ -36,16 +36,7 @@ struct SignUpFeature: View {
             isError: viewModel.passwordMatchError != nil,
             isSecure: true
             )
-            
-            
-            // 서버 메시지 표시
-            if let serverMessage = viewModel.serverMessage {
-                Text(serverMessage)
-                    .foregroundColor(.green)
-                    .font(.footnote)
-                    .multilineTextAlignment(.center)
-            }
-            
+
             Spacer()
             
             // 회원가입 버튼

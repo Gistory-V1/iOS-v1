@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LoginFeature: View {
+struct FirstFeature: View {
     var body: some View {
         NavigationView {
             VStack{
@@ -23,7 +23,8 @@ struct LoginFeature: View {
                 
                 GtButton(
                     text: "로그인",
-                    destination: AnyView(MainFeature())
+                    //destination: AnyView(SignInFeature())
+                    destination: AnyView(TabFeature().navigationBarBackButtonHidden(true))
                 )
                 GtButton(
                     text: "회원가입",
@@ -36,5 +37,5 @@ struct LoginFeature: View {
 }
 
 #Preview {
-    LoginFeature()
+    FirstFeature()
 }

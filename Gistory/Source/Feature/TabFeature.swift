@@ -7,9 +7,34 @@
 
 import SwiftUI
 
+
 struct TabFeature: View {
+    
+    @State private var selection = 0
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        TabView(selection: $selection) {
+             MainFeature()
+                .tabItem {
+                    Image("MainTab")
+                }
+                .tag(0)
+              WriteFeature()
+                .tabItem {
+                    Image("WriteTab")
+                }
+                .tag(1)
+              BellFeature()
+                .tabItem {
+                    Image("BellTab")
+                }
+                .tag(2)
+              MyBlogFeature()
+                .tabItem {
+                    Image("MyblogTab")
+                }
+                .tag(3)
+        }
+        .accentColor(.purple)
     }
 }
 

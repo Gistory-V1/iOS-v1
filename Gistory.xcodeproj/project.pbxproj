@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4E6EDE342D119C1800F329D4 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 4E6EDE332D119C1800F329D4 /* Moya */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		4E9965412D1066F100765AC9 /* Gistory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gistory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E6EDE342D119C1800F329D4 /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = Gistory;
 			packageProductDependencies = (
+				4E6EDE332D119C1800F329D4 /* Moya */,
 			);
 			productName = Gistory;
 			productReference = 4E9965412D1066F100765AC9 /* Gistory.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 4E9965382D1066F100765AC9;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4E6EDE322D119B9300F329D4 /* XCRemoteSwiftPackageReference "Moya" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4E9965422D1066F100765AC9 /* Products */;
 			projectDirPath = "";
@@ -252,6 +261,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Gistory/Preview Content\"";
+				DEVELOPMENT_TEAM = CZ4X28GKF4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -280,6 +290,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Gistory/Preview Content\"";
+				DEVELOPMENT_TEAM = CZ4X28GKF4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -322,6 +333,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4E6EDE322D119B9300F329D4 /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4E6EDE332D119C1800F329D4 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4E6EDE322D119B9300F329D4 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4E9965392D1066F100765AC9 /* Project object */;
 }

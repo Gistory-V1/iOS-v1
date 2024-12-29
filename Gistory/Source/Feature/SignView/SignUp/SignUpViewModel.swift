@@ -31,16 +31,20 @@ public class SignUpViewModel: ObservableObject {
     public func signUp() {
         guard let url = URL(string: signUpURL) else {
             serverMessage = "잘못된 URL입니다."
+            print(serverMessage!) // 서버 메시지 출력
             return
         }
         
+        // 요청 본문에 필수 데이터 (confirmPassword를 제외하고 전송)
         let requestBody: [String: String] = [
             "email": email,
             "password": password
         ]
         
+        // JSON으로 변환
         guard let jsonData = try? JSONEncoder().encode(requestBody) else {
             serverMessage = "요청 데이터를 인코딩할 수 없습니다."
+            print(serverMessage!) // 서버 메시지 출력
             return
         }
         
@@ -51,28 +55,42 @@ public class SignUpViewModel: ObservableObject {
         
         URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { output in
-                if let httpResponse = output.response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
-                    throw URLError(.badServerResponse)
+                if let httpResponse = output.response as? HTTPURLResponse {
+                    // 상태 코드 200 ~ 299 사이가 아니면 에러 처리
+                    if !(200...299).contains(httpResponse.statusCode) {
+                        let statusCode = httpResponse.statusCode
+                        let serverErrorMessage = HTTPURLResponse.localizedString(forStatusCode: statusCode)
+
+                        if let errorMessage = String(data: output.data, encoding: .utf8), !errorMessage.isEmpty {
+                            print("서버 응답 에러 메시지: \(errorMessage)") // 서버 오류 메시지 출력
+                            throw URLError(.init(rawValue: statusCode), userInfo: [NSLocalizedDescriptionKey: "서버 에러 \(statusCode): \(serverErrorMessage). \(errorMessage)"])
+                        } else {
+                            print("서버 응답 오류: \(serverErrorMessage)") // 서버 오류 메시지 출력
+                            throw URLError(.init(rawValue: statusCode), userInfo: [NSLocalizedDescriptionKey: "서버 에러 \(statusCode): \(serverErrorMessage)"])
+                        }
+                    }
                 }
                 return output.data
             }
             .decode(type: SignUpResponse.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
+            .sink(receiveCompletion: { [weak self] completion in
                 if case let .failure(error) = completion {
-                    self.serverMessage = "회원가입 실패: \(error.localizedDescription)"
+                    self?.serverMessage = error.localizedDescription
+                    print("에러 메시지: \(error.localizedDescription)") // 에러 메시지 출력
                 }
-            }, receiveValue: { response in
-                self.serverMessage = response.message
+            }, receiveValue: { [weak self] response in
+                self?.serverMessage = response.message
+                print("서버 응답 메시지: \(response.message)") // 서버 응답 메시지 출력
             })
             .store(in: &cancellables)
     }
-    
+
     public func isValidEmail(_ email: String) -> Bool {
         let emailRegex = "^s\\d{5}@gsm\\.hs\\.kr$"
         return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
     }
-    
+
     public func isValidPassword(_ password: String) -> Bool {
         return password.count >= 8 // 비밀번호 최소 길이 검사
     }

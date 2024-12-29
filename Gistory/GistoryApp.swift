@@ -11,7 +11,7 @@ import SwiftUI
 struct GistoryApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabFeature()
         }
     }
 }
