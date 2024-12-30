@@ -8,6 +8,8 @@ public class SignInViewModel: ObservableObject {
     @Published var emailErrorMessage: String? = nil
     @Published var passwordErrorMessage: String? = nil
     @Published var successMessage: String? = nil
+    @Published var name: String? = nil // 이름 추가
+    
     
     private var cancellables = Set<AnyCancellable>()
     private let loginURL = "https://port-0-gistory-server-v1-m47qofx19aae55ab.sel4.cloudtype.app/auth/login"
@@ -61,9 +63,15 @@ public class SignInViewModel: ObservableObject {
             }, receiveValue: { [weak self] response in
                 self?.emailErrorMessage = nil // 이메일 오류 초기화
                 self?.successMessage = response.message  // 로그인 성공 시 성공 메시지 처리
-
+                self?.name = response.name 
                 self?.handleTokens(response)
-                print("로그인 성공: \(response.message)")
+                // 서버 응답 출력
+                print("로그인 상태: \(response.message)")
+//                print("액세스 토큰: \(response.accessToken)")
+//                print("리프레시 토큰: \(response.refreshToken)")
+//                print("액세스 토큰 만료 시간: \(response.accessTokenExpiresIn)")
+//                print("리프레시 토큰 만료 시간: \(response.refreshTokenExpiresIn)")
+                print("이름: \(response.name)")
             })
             .store(in: &cancellables)
     }
@@ -112,14 +120,21 @@ public class SignInViewModel: ObservableObject {
     }
     
     // Keychain 저장 함수
-    private func saveTokenToKeychain(key: String, value: String) {
+    public func saveTokenToKeychain(key: String, value: String) {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: key,
             kSecValueData as String: value.data(using: .utf8)!
         ]
-        SecItemDelete(query as CFDictionary) // 기존 값 제거
-        SecItemAdd(query as CFDictionary, nil)
+        
+        SecItemDelete(query as CFDictionary) // 기존 값을 삭제
+        let status = SecItemAdd(query as CFDictionary, nil) // 새 값을 추가
+        
+        if status == errSecSuccess {
+            print("\(key) 저장 성공: \(value)")
+        } else {
+            print("\(key) 저장 실패, 상태 코드: \(status)")
+        }
     }
 }
 
@@ -129,13 +144,15 @@ public struct SignInResponse: Codable {
     public let refreshToken: String
     public let accessTokenExpiresIn: String
     public let refreshTokenExpiresIn: String
-    
-    public init(message: String, accessToken: String, refreshToken: String, accessTokenExpiresIn: String, refreshTokenExpiresIn: String) {
+    public let name: String // 이름 추가
+
+    public init(message: String, accessToken: String, refreshToken: String, accessTokenExpiresIn: String, refreshTokenExpiresIn: String, name: String) {
         self.message = message
         self.accessToken = accessToken
         self.refreshToken = refreshToken
         self.accessTokenExpiresIn = accessTokenExpiresIn
         self.refreshTokenExpiresIn = refreshTokenExpiresIn
+        self.name = name
     }
 }
 
