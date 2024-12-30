@@ -54,26 +54,28 @@ public class SignInViewModel: ObservableObject {
             .sink(receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
                 if case let .failure(error) = completion {
-                    self?.emailErrorMessage = "로그인 실패: \(error.localizedDescription)"
-                    print("로그인 실패: \(error.localizedDescription)") // 로그인 실패 메시지 출력
+                    // 로그인 실패 시 이메일 오류 메시지 표시
+                    self?.passwordErrorMessage = "비밀번호가 틀렸습니다."
+                    print("로그인 실패: \(error.localizedDescription)")
                 }
             }, receiveValue: { [weak self] response in
-                self?.successMessage = response.message
-                self?.emailErrorMessage = nil
-                self?.passwordErrorMessage = nil
+                self?.emailErrorMessage = nil // 이메일 오류 초기화
+                self?.successMessage = response.message  // 로그인 성공 시 성공 메시지 처리
+
                 self?.handleTokens(response)
-                print("로그인 성공: \(response.message)") // 로그인 성공 메시지 출력
+                print("로그인 성공: \(response.message)")
             })
             .store(in: &cancellables)
     }
-    
     // 이메일 검증 함수
     public func validateEmail() -> Bool {
         if email.isEmpty {
             emailErrorMessage = "이메일을 입력해주세요."
+            print("이메일 오류: 이메일을 입력해주세요.")  // 에러 메시지 출력
             return false
         } else if !isValidEmail(email) {
             emailErrorMessage = "올바른 이메일 형식이 아닙니다."
+            print("이메일 오류: 올바른 이메일 형식이 아닙니다.")  // 에러 메시지 출력
             return false
         } else {
             emailErrorMessage = nil
@@ -89,10 +91,6 @@ public class SignInViewModel: ObservableObject {
         } else if password.count < 8 {
             passwordErrorMessage = "비밀번호는 8자 이상이어야 합니다."
             return false
-//        } else if !password.contains(where: { "!@#$%^&*".contains($0) }) {
-//            passwordErrorMessage = "비밀번호에 특수문자가 포함되어야 합니다."
-//            return false
-//        }
         } else {
             passwordErrorMessage = nil
             return true
